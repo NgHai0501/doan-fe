@@ -12,7 +12,7 @@ pipeline {
         stage("1. Clone code"){
             steps{
                 echo "Clone repository..."
-                scm checkout
+                checkout scm
                 echo "Clone complete!"
             }
         }

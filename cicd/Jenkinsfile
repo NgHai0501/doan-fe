@@ -21,7 +21,7 @@ pipeline {
 
         stage("2. Build images"){
             steps{
-                sh "docker build -t ${image_name}:${image_version} -f cicd/Dockerfile ."
+                sh "docker build -t ${image_name}:${image_version} -f ${WORKSPACE}/cicd/Dockerfile ${WORKSPACE}"
                 sh "docker tag ${image_name}:${image_version} ${docker_registry}/${image_name}:${image_version}"
             }
         }

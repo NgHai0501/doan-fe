@@ -10,8 +10,8 @@ RUN npm run build
 
 FROM nginx:1.25.4-alpine-slim as prod
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY ./cicd/nginx.conf /etc/nginx/conf.d
-COPY ./cicd/entrypoint.sh entrypoint.sh
+COPY cicd/nginx.conf /etc/nginx/conf.d
+COPY cicd/entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 EXPOSE 3000
 CMD ["./entrypoint.sh"]

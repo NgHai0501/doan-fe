@@ -2,7 +2,6 @@ pipeline {
 
     agent any
 
-
     environment{
         image_name = "doan-fe"
         image_version = "1.0.0"

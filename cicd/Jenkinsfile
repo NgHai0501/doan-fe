@@ -1,0 +1,35 @@
+pipeline {
+
+    agent any
+
+
+    def image_name = "doan-fe"
+    def image_version = "1.0.0"
+    def docker_registry = "hub.docker.com/hai0110"
+
+    stages{
+        stage("1. Clone code"){
+            steps{
+                echo "Clone repository..."
+                scm checkout
+                echo "Clone complete!"
+            }
+        }
+
+        stage("2. Build images"){
+            steps{
+                sh "docker build -t ${image_name}:${image_version} -f cicd/Dockerfile ."
+            }
+        }
+
+        stage("3. Push images"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'dockerhub',
+                                                usernameVariable: 'DOCKER_USER',
+                                                passwordVariable: 'DOCKER_PASS')]){
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                }
+            }
+        }
+    }
+}

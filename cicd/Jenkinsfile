@@ -19,6 +19,7 @@ pipeline {
         stage("2. Build images"){
             steps{
                 sh "docker build -t ${image_name}:${image_version} -f cicd/Dockerfile ."
+                sh "docker tag ${image_name}:${image_version} ${docker_registry}/${image_name}:${image_version}"
             }
         }
 
@@ -27,7 +28,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub',
                                                 usernameVariable: 'DOCKER_USER',
                                                 passwordVariable: 'DOCKER_PASS')]){
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+                        sh "docker push ${docker_registry}/${image_name}:${image_version}"
                 }
             }
         }

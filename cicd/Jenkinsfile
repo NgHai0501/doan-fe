@@ -5,14 +5,16 @@ pipeline {
     environment{
         image_name = "doan-fe"
         image_version = "1.0.0"
-        docker_registry = "hub.docker.com/hai0110"
+        docker_registry = "hainh0110"
     }
-    
+
     stages{
         stage("1. Clone code"){
             steps{
                 echo "Clone repository..."
-                scm checkout
+                checkout scm
+                sh "pwd"
+                sh "ls"
                 echo "Clone complete!"
             }
         }
@@ -26,12 +28,13 @@ pipeline {
 
         stage("3. Push images"){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerhub',
-                                                usernameVariable: 'DOCKER_USER',
-                                                passwordVariable: 'DOCKER_PASS')]){
-                        sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
-                        sh "docker push ${docker_registry}/${image_name}:${image_version}"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $docker_registry/$image_name:$image_version
+                    '''
                 }
+                
             }
         }
     }
